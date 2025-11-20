@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import CreateSection from './components/CreateSection';
@@ -8,7 +8,7 @@ import Player from './components/Player';
 import AuthModal from './components/AuthModal';
 import { getSampleSongs, TRANSLATIONS } from './constants';
 import { Song, Language } from './types';
-import { Loader2, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 const App: React.FC = () => {
   // Separate generated songs so they persist across language changes
@@ -31,6 +31,46 @@ const App: React.FC = () => {
     setGeneratedSongs(prev => [newSong, ...prev]);
     setCurrentSong(newSong); // Auto play generated song
   };
+
+  // --- Drag to Scroll Logic for Suno-like effect ---
+  const createDragHandler = () => {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [startX, setStartX] = useState(0);
+    const [scrollLeft, setScrollLeft] = useState(0);
+
+    const onMouseDown = (e: React.MouseEvent) => {
+      if (!scrollRef.current) return;
+      setIsDragging(true);
+      setStartX(e.pageX - scrollRef.current.offsetLeft);
+      setScrollLeft(scrollRef.current.scrollLeft);
+    };
+
+    const onMouseLeave = () => setIsDragging(false);
+    const onMouseUp = () => setIsDragging(false);
+
+    const onMouseMove = (e: React.MouseEvent) => {
+      if (!isDragging || !scrollRef.current) return;
+      e.preventDefault();
+      const x = e.pageX - scrollRef.current.offsetLeft;
+      const walk = (x - startX) * 2; // Scroll speed multiplier
+      scrollRef.current.scrollLeft = scrollLeft - walk;
+    };
+
+    return {
+      ref: scrollRef,
+      events: {
+        onMouseDown,
+        onMouseLeave,
+        onMouseUp,
+        onMouseMove,
+      },
+      style: { cursor: isDragging ? 'grabbing' : 'grab' }
+    };
+  };
+
+  const trendingDrag = createDragHandler();
+  const newReleasesDrag = createDragHandler();
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-white/20 pb-32">
@@ -66,10 +106,15 @@ const App: React.FC = () => {
                  </button>
                </div>
                
-               {/* Horizontal Scroll Container */}
-               <div className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide snap-x">
+               {/* Horizontal Scroll Container with Drag Support */}
+               <div 
+                 ref={trendingDrag.ref}
+                 {...trendingDrag.events}
+                 style={trendingDrag.style}
+                 className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none"
+               >
                  {trendingSongs.map((song) => (
-                   <div key={song.id} className="min-w-[220px] md:min-w-[240px] snap-start">
+                   <div key={song.id} className="min-w-[220px] md:min-w-[240px] shrink-0">
                      <SongCard 
                         song={song} 
                         onClick={setCurrentSong}
@@ -89,9 +134,14 @@ const App: React.FC = () => {
                  </button>
                </div>
                
-               <div className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide snap-x">
+               <div 
+                 ref={newReleasesDrag.ref}
+                 {...newReleasesDrag.events}
+                 style={newReleasesDrag.style}
+                 className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none"
+               >
                  {newReleases.map((song) => (
-                   <div key={`new-${song.id}`} className="min-w-[220px] md:min-w-[240px] snap-start">
+                   <div key={`new-${song.id}`} className="min-w-[220px] md:min-w-[240px] shrink-0">
                      <SongCard 
                         song={song} 
                         onClick={setCurrentSong}
