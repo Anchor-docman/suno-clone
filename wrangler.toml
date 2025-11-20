@@ -1,3 +1,15 @@
+name = "creative-studio"
+main = "./index.html"
+compatibility_date = "2025-11-20"
+
+d1_databases = [
+  { binding = "DB", database_name = "suno-db", database_id = "94b69358-2fa3-4c54-87c0-5e716ea08444" }
+]
+
+[[r2_buckets]]
+binding = "MUSIC_BUCKET"  
+bucket = "creative-studio-music"       
+
 [observability]
 enabled = false
 head_sampling_rate = 1
@@ -12,3 +24,4 @@ invocation_logs = true
 enabled = false
 persist = true
 head_sampling_rate = 1
+
