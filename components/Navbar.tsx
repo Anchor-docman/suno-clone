@@ -28,13 +28,13 @@ const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenAuth }) =>
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       scrolled || mobileMenuOpen ? 'bg-zinc-950/90 backdrop-blur-md border-b border-white/10 py-3' : 'bg-transparent py-5'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between">
-        {/* Logo */}
-        <div className="flex items-center gap-2 cursor-pointer group z-50">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 flex items-center justify-between">
+        {/* Logo - Added min-w-0 and truncate to prevent pushing buttons off screen */}
+        <div className="flex items-center gap-2 cursor-pointer group z-50 min-w-0 flex-1 md:flex-none mr-2">
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
             <Music className="w-5 h-5 text-black" strokeWidth={3} />
           </div>
-          <span className="text-lg md:text-xl font-bold tracking-tight">{t.title}</span>
+          <span className="text-lg md:text-xl font-bold tracking-tight truncate block">{t.title}</span>
         </div>
 
         {/* Desktop Links */}
@@ -66,17 +66,17 @@ const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenAuth }) =>
 
           <button 
             onClick={onOpenAuth}
-            className="font-semibold text-sm text-black bg-white hover:bg-zinc-200 px-5 py-2 rounded-full transition-colors"
+            className="font-semibold text-sm text-black bg-white hover:bg-zinc-200 px-5 py-2 rounded-full transition-colors whitespace-nowrap"
           >
             {t.signup}
           </button>
         </div>
 
-        {/* Mobile Actions (Visible on mobile) */}
-        <div className="md:hidden flex items-center gap-3 z-50">
+        {/* Mobile Actions (Visible on mobile) - Added shrink-0 to prevent squeeze */}
+        <div className="md:hidden flex items-center gap-2 z-50 shrink-0">
           <button 
             onClick={onOpenAuth}
-            className="font-semibold text-xs text-black bg-white active:bg-zinc-200 px-3 py-1.5 rounded-full transition-colors"
+            className="font-semibold text-xs text-black bg-white active:bg-zinc-200 px-3 py-1.5 rounded-full transition-colors whitespace-nowrap"
           >
             {t.signup}
           </button>
