@@ -6,9 +6,10 @@ import { TRANSLATIONS } from '../constants';
 interface NavbarProps {
   language: Language;
   setLanguage: (lang: Language) => void;
+  onOpenAuth: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ language, setLanguage }) => {
+const Navbar: React.FC<NavbarProps> = ({ language, setLanguage, onOpenAuth }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const t = TRANSLATIONS[language].navbar;
@@ -63,7 +64,10 @@ const Navbar: React.FC<NavbarProps> = ({ language, setLanguage }) => {
             {language === 'en' ? 'EN' : '中文'}
           </button>
 
-          <button className="font-semibold text-sm text-black bg-white hover:bg-zinc-200 px-5 py-2 rounded-full transition-colors">
+          <button 
+            onClick={onOpenAuth}
+            className="font-semibold text-sm text-black bg-white hover:bg-zinc-200 px-5 py-2 rounded-full transition-colors"
+          >
             {t.signup}
           </button>
         </div>
@@ -90,7 +94,7 @@ const Navbar: React.FC<NavbarProps> = ({ language, setLanguage }) => {
                 {language === 'en' ? 'English' : '中文'}
              </button>
           </div>
-          <button className="w-full bg-white text-black font-bold py-3 rounded-full">{t.signup}</button>
+          <button onClick={onOpenAuth} className="w-full bg-white text-black font-bold py-3 rounded-full">{t.signup}</button>
         </div>
       )}
     </nav>

@@ -5,6 +5,7 @@ import CreateSection from './components/CreateSection';
 import Marquee from './components/Marquee';
 import SongCard from './components/SongCard';
 import Player from './components/Player';
+import AuthModal from './components/AuthModal';
 import { getSampleSongs, TRANSLATIONS } from './constants';
 import { Song, Language } from './types';
 import { Loader2 } from 'lucide-react';
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [currentSong, setCurrentSong] = useState<Song | null>(null);
   // Default language set to Chinese
   const [language, setLanguage] = useState<Language>('zh'); 
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const t = TRANSLATIONS[language].app;
 
@@ -28,7 +30,11 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white selection:bg-white/20">
-      <Navbar language={language} setLanguage={setLanguage} />
+      <Navbar 
+        language={language} 
+        setLanguage={setLanguage} 
+        onOpenAuth={() => setIsAuthModalOpen(true)}
+      />
       
       <main>
         <Hero language={language} />
@@ -75,6 +81,13 @@ const App: React.FC = () => {
       </main>
 
       <Player currentSong={currentSong} language={language} />
+
+      {/* Auth Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen} 
+        onClose={() => setIsAuthModalOpen(false)} 
+        language={language}
+      />
 
       {/* Generated Lyrics Modal Overlay (Mockup if song has lyrics) */}
       {currentSong?.lyrics && (

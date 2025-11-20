@@ -10,6 +10,7 @@ export const TRANSLATIONS = {
       about: "About",
       searchPlaceholder: "Search songs...",
       signup: "Sign up",
+      login: "Log in",
     },
     hero: {
       intro: "Introducing v3 Alpha",
@@ -42,6 +43,18 @@ export const TRANSLATIONS = {
     },
     player: {
       lyrics: "LYRICS"
+    },
+    auth: {
+      loginTitle: "Welcome back",
+      signupTitle: "Create an account",
+      email: "Email address",
+      password: "Password",
+      submitLogin: "Log in",
+      submitSignup: "Sign up",
+      toggleToSignup: "Don't have an account? Sign up",
+      toggleToLogin: "Already have an account? Log in",
+      success: "Account created successfully!",
+      error: "Something went wrong."
     }
   },
   zh: {
@@ -53,6 +66,7 @@ export const TRANSLATIONS = {
       about: "关于",
       searchPlaceholder: "搜索歌曲...",
       signup: "注册",
+      login: "登录",
     },
     hero: {
       intro: "v3 Alpha 版本介绍",
@@ -85,6 +99,18 @@ export const TRANSLATIONS = {
     },
     player: {
       lyrics: "歌词"
+    },
+    auth: {
+      loginTitle: "欢迎回来",
+      signupTitle: "创建账户",
+      email: "电子邮箱",
+      password: "密码",
+      submitLogin: "登录",
+      submitSignup: "注册",
+      toggleToSignup: "还没有账户？去注册",
+      toggleToLogin: "已有账户？去登录",
+      success: "账户创建成功！",
+      error: "发生了一些错误。"
     }
   }
 };
