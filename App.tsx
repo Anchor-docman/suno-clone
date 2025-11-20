@@ -32,7 +32,7 @@ const App: React.FC = () => {
     setCurrentSong(newSong); // Auto play generated song
   };
 
-  // --- Drag to Scroll Logic for Suno-like effect ---
+  // --- Enhanced Drag to Scroll Logic ---
   const createDragHandler = () => {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState(false);
@@ -46,26 +46,31 @@ const App: React.FC = () => {
       setScrollLeft(scrollRef.current.scrollLeft);
     };
 
-    const onMouseLeave = () => setIsDragging(false);
-    const onMouseUp = () => setIsDragging(false);
+    const onMouseLeave = () => {
+      setIsDragging(false);
+    };
+
+    const onMouseUp = () => {
+      setIsDragging(false);
+    };
 
     const onMouseMove = (e: React.MouseEvent) => {
       if (!isDragging || !scrollRef.current) return;
       e.preventDefault();
       const x = e.pageX - scrollRef.current.offsetLeft;
-      const walk = (x - startX) * 2; // Scroll speed multiplier
+      const walk = (x - startX) * 1.5; // Scroll speed multiplier
       scrollRef.current.scrollLeft = scrollLeft - walk;
     };
 
     return {
       ref: scrollRef,
+      isDragging,
       events: {
         onMouseDown,
         onMouseLeave,
         onMouseUp,
         onMouseMove,
-      },
-      style: { cursor: isDragging ? 'grabbing' : 'grab' }
+      }
     };
   };
 
@@ -92,7 +97,7 @@ const App: React.FC = () => {
            </div>
            
            {/* Main Content - Horizontal Scrolling Sections (Suno Style) */}
-           <div className="max-w-[1600px] mx-auto px-6 space-y-12">
+           <div className="max-w-[1600px] mx-auto px-4 md:px-6 space-y-12">
              
              {/* Generated/Trending Section */}
              <section>
@@ -110,16 +115,23 @@ const App: React.FC = () => {
                <div 
                  ref={trendingDrag.ref}
                  {...trendingDrag.events}
-                 style={trendingDrag.style}
-                 className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none"
+                 className={`flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none ${trendingDrag.isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                >
                  {trendingSongs.map((song) => (
-                   <div key={song.id} className="min-w-[220px] md:min-w-[240px] shrink-0">
-                     <SongCard 
-                        song={song} 
-                        onClick={setCurrentSong}
-                        language={language}
-                     />
+                   <div key={song.id} className="min-w-[220px] md:min-w-[240px] shrink-0 pointer-events-none md:pointer-events-auto">
+                     {/* Wrap in div to re-enable pointer events for children if needed, 
+                         but for pure drag containers, usually the card click is handled on MouseUp if not dragged. 
+                         Here we keep it simple. */}
+                     <div className="pointer-events-auto">
+                        <SongCard 
+                            song={song} 
+                            onClick={(s) => {
+                                // Prevent click if we were dragging
+                                if (!trendingDrag.isDragging) setCurrentSong(s);
+                            }}
+                            language={language}
+                        />
+                     </div>
                    </div>
                  ))}
                </div>
@@ -137,16 +149,19 @@ const App: React.FC = () => {
                <div 
                  ref={newReleasesDrag.ref}
                  {...newReleasesDrag.events}
-                 style={newReleasesDrag.style}
-                 className="flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none"
+                 className={`flex gap-5 overflow-x-auto pb-8 -mx-6 px-6 scrollbar-hide select-none ${newReleasesDrag.isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
                >
                  {newReleases.map((song) => (
                    <div key={`new-${song.id}`} className="min-w-[220px] md:min-w-[240px] shrink-0">
-                     <SongCard 
-                        song={song} 
-                        onClick={setCurrentSong}
-                        language={language}
-                     />
+                      <div className="pointer-events-auto">
+                        <SongCard 
+                            song={song} 
+                            onClick={(s) => {
+                                if (!newReleasesDrag.isDragging) setCurrentSong(s);
+                            }}
+                            language={language}
+                        />
+                      </div>
                    </div>
                  ))}
                </div>
@@ -167,7 +182,7 @@ const App: React.FC = () => {
 
       {/* Generated Lyrics Modal Overlay */}
       {currentSong?.lyrics && (
-        <div className="fixed bottom-24 right-6 w-80 bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl z-40 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-24 right-6 w-80 bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl z-40 animate-in slide-in-from-bottom-5 hidden md:block">
           <h3 className="text-xs font-bold text-zinc-500 uppercase mb-2 tracking-wider">{t.lyricsTitle}</h3>
           <div className="max-h-48 overflow-y-auto pr-2 custom-scrollbar">
             <p className="text-sm text-zinc-300 whitespace-pre-line italic font-serif leading-relaxed">
