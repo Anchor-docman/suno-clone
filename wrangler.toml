@@ -8,7 +8,7 @@ d1_databases = [
 
 [[r2_buckets]]
 binding = "MUSIC_BUCKET"  
-bucket = "creative-studio-music"       
+bucket_name = "creative-studio-music"       
 
 [observability]
 enabled = false
@@ -18,5 +18,6 @@ head_sampling_rate = 1
 enabled = true
 head_sampling_rate = 1
 invocation_logs = true
+
 
 
